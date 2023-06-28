@@ -93,7 +93,7 @@ if __name__ == '__main__':
     testfile = arguments["<filename>"]
 
     alpha = 0.1
-    classes = ["Austen", "Carroll", "Grahame", "Shelley"]
+    classes = ["Austen", "Carroll", "Grahame", "Shelley", "Dickens"]
     documents = get_documents(feature_type, ngram_size)
 
     vocabulary, priors, conditional_probabilities = train_naive_bayes(classes, documents)
