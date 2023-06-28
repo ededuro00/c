@@ -46,24 +46,21 @@ def train_naive_bayes(classes, documents):
     priors = {}
     print("\n\n***\nCalculating priors and conditional probabilities for each class...\n***")
     for c in classes:
-        priors[c] = count_docs_in_class(documents, c) / count_docs(documents)
-        print("\nPrior for", c, priors[c])
-        class_size = count_docs_in_class(documents, c)
-        print("In class", c, "we have", class_size, "document(s).")
-        if class_size == 0:
-            for t in vocabulary:
-                conditional_probabilities[t][c] = 0  # Set conditional probability to 0
-        else:
-            words_in_class = concatenate_text_of_all_docs_in_class(documents, c)
-            print("Calculating conditional probabilities for the vocabulary.")
-            denominator = sum(words_in_class.values())
-            for t in vocabulary:
-                if t in words_in_class:
-                    conditional_probabilities[t][c] = (words_in_class[t] + alpha) / (denominator * (1 + alpha))
-                else:
-                    conditional_probabilities[t][c] = (0 + alpha) / (denominator * (1 + alpha))
+         priors[c] = count_docs_in_class(documents,c) / count_docs(documents)
+         print("\nPrior for",c,priors[c])
+         class_size = count_docs_in_class(documents, c)
+         print("In class",c,"we have",class_size,"document(s).")
+         words_in_class = concatenate_text_of_all_docs_in_class(documents,c)
+         #print(c,words_in_class)
+         print("Calculating conditional probabilities for the vocabulary.")
+         denominator = sum(words_in_class.values())
+         for t in vocabulary:
+             if t in words_in_class:
+                 conditional_probabilities[t][c] = (words_in_class[t] + alpha) / (denominator * (1 + alpha))
+                 #print(t,c,words_in_class[t],denominator,conditional_probabilities[t][c])
+             else:
+                 conditional_probabilities[t][c] = (0 + alpha) / (denominator * (1 + alpha))
     return vocabulary, priors, conditional_probabilities
-
 
 def apply_naive_bayes(classes, vocabulary, priors, conditional_probabilities, test_document):
     scores = {}
@@ -96,7 +93,7 @@ if __name__ == '__main__':
     testfile = arguments["<filename>"]
 
     alpha = 0.1
-    classes = ["Austen", "Carroll", "Grahame", "Shelley", "Dickens"]
+    classes = ["Austen", "Carroll", "Grahame", "Shelley"]
     documents = get_documents(feature_type, ngram_size)
 
     vocabulary, priors, conditional_probabilities = train_naive_bayes(classes, documents)
