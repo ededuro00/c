@@ -1,25 +1,8 @@
-"""Authorship Attribution
-
-Usage:
-  attribution.py --words <filename>
-  attribution.py --chars=<n> <filename>
-  attribution.py (-h | --help)
-  attribution.py --version
-
-Options:
-  -h --help     Show this screen.
-  --version     Show version.
-  --words
-  --chars=<n>  Length of char ngram.
-
-"""
-
 import sys
 import os
 import math
 from utils import process_document_words, process_document_ngrams, get_documents, extract_vocab, top_cond_probs_by_author
 from docopt import docopt
-
 
 def count_docs(documents):
     return len(documents)
@@ -78,8 +61,6 @@ def apply_naive_bayes(classes, vocabulary, priors, conditional_probabilities, te
     for author in sorted(scores, key=scores.get, reverse=True):
         print(author,"score:",scores[author])
 
-
-
 if __name__ == '__main__':
     arguments = docopt(__doc__, version='Authorship Attribution 1.1')
 
@@ -99,7 +80,19 @@ if __name__ == '__main__':
     vocabulary, priors, conditional_probabilities = train_naive_bayes(classes, documents)
 
     for author in classes:
-        print("\nBest features for",author)
+        print("\nBest features for", author)
         top_cond_probs_by_author(conditional_probabilities, author, 10)
 
-    apply_naive_bayes(classes, vocabulary, priors, conditional_probabilities, testfile)
+    # List of configurations to run
+    configurations = [
+        {"name": "words", "ngram_size": -1},
+        {"name": "chars", "ngram_size": 3},
+        {"name": "chars", "ngram_size": 5},
+        {"name": "chars", "ngram_size": 7}
+    ]
+
+    for config in configurations:
+        feature_type = config["name"]
+        ngram_size = config["ngram_size"]
+        print(f"\nRunning configuration: feature_type={feature_type}, ngram_size={ngram_size}")
+        apply_naive_bayes(classes, vocabulary, priors, conditional_probabilities, testfile)
